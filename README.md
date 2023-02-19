@@ -8,12 +8,12 @@ store your neo credentials offline
 
 ```sh
 npm ci
-npm start
+npm run start
 ```
 
 ## Build
 
 ```sh
 npm ci
-npm build
+npm run build
 ```
