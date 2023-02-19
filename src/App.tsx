@@ -51,176 +51,180 @@ export default function App() {
         <HelpIcon color='primary' />
       </Link>
     </DialogTitle>
-    <DialogContent hidden={sk !== undefined}>
-      <TextField
-        autoFocus
-        fullWidth
-        variant='standard'
-        placeholder='PRIVATEKEY | WIF ¡USE AT YOUR OWN RISK!'
-        type='password'
-        autoComplete='current-password'
-        value={skinput}
-        error={skerror}
-        label={<KeyIcon color={skerror ? 'error' : 'primary'} />}
-        onChange={(me) => {
-          SKINPUT(me.target.value);
-          SKERROR(false);
-        }} />
-      <Button
-        fullWidth
-        onClick={() => {
-          switch (true) {
-            case /^[0-9a-f]{64}$/.test(skinput):
-              SKINPUT('');
-              SK(skinput);
-              break;
-            case /^0x[0-9a-f]{64}$/.test(skinput):
-              SKINPUT('');
-              SK(skinput.slice(2));
-              break;
-            case wallet.isWIF(skinput):
-              SKINPUT('');
-              SK(new wallet.Account(skinput).privateKey);
-              break;
-            default:
-              SKERROR(true);
-          }
-        }}>
-        <LockOpenIcon />
-      </Button>
-    </DialogContent>
-    <DialogContent hidden={sk === undefined}>
-      <List>
-        <ListItem>
-          <Button fullWidth onClick={() => {
-            XTINPUT('');
-            SK(undefined);
-          }}>
-            <LockIcon color='primary' />
-          </Button>
-        </ListItem>
-        <ListItem secondaryAction={
-          <IconButton edge='end'
-            onClick={() => {
-              CONTENT(new wallet.Account(sk).address);
-              DIALOGW(true);
-            }}>
-            <QrCodeIcon color='primary' />
-          </IconButton>
-        }>
-          <ListItemIcon>
-            <WalletIcon color='primary' />
-          </ListItemIcon>
-          <ListItemText primary={new wallet.Account(sk).address} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
-        </ListItem>
-        <ListItem secondaryAction={
-          <IconButton edge='end'
-            onClick={() => {
-              CONTENT(`0x${new wallet.Account(sk).scriptHash}`);
-              DIALOGW(true);
-            }}>
-            <QrCodeIcon color='primary' />
-          </IconButton>
-        }>
-          <ListItemIcon>
-            <TagIcon color='primary' />
-          </ListItemIcon>
-          <ListItemText primary={`0x${new wallet.Account(sk).scriptHash}`} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
-        </ListItem>
-        <ListItem secondaryAction={
-          <IconButton edge='end'
-            onClick={() => {
-              CONTENT(new wallet.Account(sk).publicKey);
-              DIALOGW(true);
-            }}>
-            <QrCodeIcon color='primary' />
-          </IconButton>
-        }>
-          <ListItemIcon>
-            <CreditCardIcon color='primary' />
-          </ListItemIcon>
-          <ListItemText primary={new wallet.Account(sk).publicKey} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
-        </ListItem>
-        <ListItem>
+    {
+      sk === undefined ?
+        <DialogContent>
           <TextField
             autoFocus
             fullWidth
             variant='standard'
-            placeholder='ENTER PAYLOAD AND SIGN'
-            error={xterror}
-            value={xtinput}
-            label={<DataArrayIcon color={xterror ? 'error' : 'primary'} />}
+            placeholder='PRIVATEKEY | WIF ¡USE AT YOUR OWN RISK!'
+            type='password'
+            autoComplete='current-password'
+            value={skinput}
+            error={skerror}
+            label={<KeyIcon color={skerror ? 'error' : 'primary'} />}
             onChange={(me) => {
-              XTINPUT(me.target.value.replace(/\s/g, ''));
-              XTERROR(false);
+              SKINPUT(me.target.value);
+              SKERROR(false);
             }} />
-          <IconButton
+          <Button
+            fullWidth
             onClick={() => {
-              DIALOGR(true);
-            }}>
-            <QrCodeScannerIcon color='primary' />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              try {
-                const magic = xtinput.slice(0, 8);
-                if (!/[0-9a-f]{8}/.test(magic)) throw new Error();
-                const transaction = xtinput.slice(8);
-                XT([magic, tx.Transaction.deserialize(transaction)]);
-                XTINPUT('');
-                DIALOGX(true);
-              } catch {
-                XTERROR(true);
+              switch (true) {
+                case /^[0-9a-f]{64}$/.test(skinput):
+                  SKINPUT('');
+                  SK(skinput);
+                  break;
+                case /^0x[0-9a-f]{64}$/.test(skinput):
+                  SKINPUT('');
+                  SK(skinput.slice(2));
+                  break;
+                case wallet.isWIF(skinput):
+                  SKINPUT('');
+                  SK(new wallet.Account(skinput).privateKey);
+                  break;
+                default:
+                  SKERROR(true);
               }
             }}>
-            <CreateIcon color='primary' />
-          </IconButton>
-        </ListItem>
-      </List>
-      <Dialog open={dialogw} fullWidth>
-        <DialogContent sx={{ paddingX: '16px' }}>
-          <Stack alignItems='center'>
-            <QRCodeSVG value={content} size={theme.breakpoints.values.sm - 32} />
-            <Typography fontFamily='monospace' sx={{ wordBreak: 'break-all' }}>{content}</Typography>
-            <Button fullWidth onClick={() => navigator.clipboard.writeText(content)}>
-              <ContentCopyIcon color='primary' />
-            </Button>
-            <Button fullWidth onClick={() => DIALOGW(false)}>
-              <CloseIcon color='primary' />
-            </Button>
-          </Stack>
+            <LockOpenIcon />
+          </Button>
         </DialogContent>
-      </Dialog>
-      <Dialog open={dialogr} fullWidth>
-        <DialogContent sx={{ paddingX: '16px' }}>
-          <Stack alignItems='center'>
-            {/* TODO */}
-            <IconButton
-              onClick={() => {
-                DIALOGR(false);
-              }}>
-              <CloseIcon color='primary' />
-            </IconButton>
-          </Stack>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={dialogx} fullWidth>
+        :
         <DialogContent>
-          <Typography fontFamily='monospace' sx={{ wordBreak: 'break-all' }}>{xt ? JSON.stringify(xt[1].toJson(), null, 2) : ''}</Typography>
+          <List>
+            <ListItem>
+              <Button fullWidth onClick={() => {
+                XTINPUT('');
+                SK(undefined);
+              }}>
+                <LockIcon color='primary' />
+              </Button>
+            </ListItem>
+            <ListItem secondaryAction={
+              <IconButton edge='end'
+                onClick={() => {
+                  CONTENT(new wallet.Account(sk).address);
+                  DIALOGW(true);
+                }}>
+                <QrCodeIcon color='primary' />
+              </IconButton>
+            }>
+              <ListItemIcon>
+                <WalletIcon color='primary' />
+              </ListItemIcon>
+              <ListItemText primary={new wallet.Account(sk).address} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
+            </ListItem>
+            <ListItem secondaryAction={
+              <IconButton edge='end'
+                onClick={() => {
+                  CONTENT(`0x${new wallet.Account(sk).scriptHash}`);
+                  DIALOGW(true);
+                }}>
+                <QrCodeIcon color='primary' />
+              </IconButton>
+            }>
+              <ListItemIcon>
+                <TagIcon color='primary' />
+              </ListItemIcon>
+              <ListItemText primary={`0x${new wallet.Account(sk).scriptHash}`} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
+            </ListItem>
+            <ListItem secondaryAction={
+              <IconButton edge='end'
+                onClick={() => {
+                  CONTENT(new wallet.Account(sk).publicKey);
+                  DIALOGW(true);
+                }}>
+                <QrCodeIcon color='primary' />
+              </IconButton>
+            }>
+              <ListItemIcon>
+                <CreditCardIcon color='primary' />
+              </ListItemIcon>
+              <ListItemText primary={new wallet.Account(sk).publicKey} primaryTypographyProps={{ fontFamily: 'monospace', noWrap: true }} />
+            </ListItem>
+            <ListItem>
+              <TextField
+                autoFocus
+                fullWidth
+                variant='standard'
+                placeholder='ENTER PAYLOAD AND SIGN'
+                error={xterror}
+                value={xtinput}
+                label={<DataArrayIcon color={xterror ? 'error' : 'primary'} />}
+                onChange={(me) => {
+                  XTINPUT(me.target.value.replace(/\s/g, ''));
+                  XTERROR(false);
+                }} />
+              <IconButton
+                onClick={() => {
+                  DIALOGR(true);
+                }}>
+                <QrCodeScannerIcon color='primary' />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  try {
+                    const magic = xtinput.slice(0, 8);
+                    if (!/^[0-9a-f]{8}$/.test(magic)) throw new Error();
+                    const transaction = xtinput.slice(8);
+                    XT([magic, tx.Transaction.deserialize(transaction)]);
+                    XTINPUT('');
+                    DIALOGX(true);
+                  } catch {
+                    XTERROR(true);
+                  }
+                }}>
+                <CreateIcon color='primary' />
+              </IconButton>
+            </ListItem>
+          </List>
+          <Dialog open={dialogw} fullWidth>
+            <DialogContent sx={{ paddingX: '16px' }}>
+              <Stack alignItems='center'>
+                <QRCodeSVG value={content} size={theme.breakpoints.values.sm - 32} />
+                <Typography fontFamily='monospace' sx={{ wordBreak: 'break-all' }}>{content}</Typography>
+                <Button fullWidth onClick={() => navigator.clipboard.writeText(content)}>
+                  <ContentCopyIcon color='primary' />
+                </Button>
+                <Button fullWidth onClick={() => DIALOGW(false)}>
+                  <CloseIcon color='primary' />
+                </Button>
+              </Stack>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={dialogr} fullWidth>
+            <DialogContent sx={{ paddingX: '16px' }}>
+              <Stack alignItems='center'>
+                {/* TODO */}
+                <IconButton
+                  onClick={() => {
+                    DIALOGR(false);
+                  }}>
+                  <CloseIcon color='primary' />
+                </IconButton>
+              </Stack>
+            </DialogContent>
+          </Dialog>
+          <Dialog open={dialogx} fullWidth>
+            <DialogContent>
+              <Typography fontFamily='monospace' sx={{ wordBreak: 'break-all' }}>{xt ? JSON.stringify(xt[1].toJson(), null, 2) : ''}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <IconButton onClick={() => {
+                CONTENT(wallet.sign(`${xt![0]}${reverseHex(xt![1].hash())}`, sk!));
+                DIALOGX(false);
+                DIALOGW(true);
+              }}>
+                <CheckIcon />
+              </IconButton>
+              <IconButton onClick={() => DIALOGX(false)}>
+                <CloseIcon />
+              </IconButton>
+            </DialogActions>
+          </Dialog>
         </DialogContent>
-        <DialogActions>
-          <IconButton onClick={() => {
-            CONTENT(wallet.sign(`${xt![0]}${reverseHex(xt![1].hash())}`, sk!));
-            DIALOGX(false);
-            DIALOGW(true);
-          }}>
-            <CheckIcon />
-          </IconButton>
-          <IconButton onClick={() => DIALOGX(false)}>
-            <CloseIcon />
-          </IconButton>
-        </DialogActions>
-      </Dialog>
-    </DialogContent>
+    }
   </Dialog>;
 }
