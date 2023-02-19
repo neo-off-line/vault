@@ -29,8 +29,8 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { tx, wallet } from '@cityofzion/neon-core-neo3';
-import { reverseHex } from '@cityofzion/neon-core-neo3/lib/u';
+import { tx, wallet } from '@cityofzion/neon-core';
+import { reverseHex } from '@cityofzion/neon-core/lib/u';
 
 export default function App() {
   const theme = useTheme();
