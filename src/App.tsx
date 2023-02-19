@@ -28,7 +28,6 @@ import TagIcon from '@mui/icons-material/Tag';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
-import { QrReader } from 'react-qr-reader';
 import { QRCodeSVG } from 'qrcode.react';
 import { tx, wallet } from '@cityofzion/neon-core-neo3';
 import { reverseHex } from '@cityofzion/neon-core-neo3/lib/u';
@@ -195,13 +194,7 @@ export default function App() {
       <Dialog open={dialogr} fullWidth>
         <DialogContent sx={{ paddingX: '16px' }}>
           <Stack alignItems='center'>
-            <QrReader
-              containerStyle={{ width: '100%' }}
-              constraints={{}}
-              onResult={(result, error) => {
-                console.log(result, error);
-                // TODO
-              }} />
+            {/* TODO */}
             <IconButton
               onClick={() => {
                 DIALOGR(false);
